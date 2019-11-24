@@ -15,7 +15,7 @@ public class DriverService {
     @Autowired
     private DriverRepository driverRepository;
 
-    public Driver create(String name, String licenseNumber, List<Car> cars, Contact contact) {
+    public Driver create(String name, String licenseNumber, Car cars, Contact contact) {
         return driverRepository.save(new Driver(name, licenseNumber, cars, contact));
     }
 
@@ -31,7 +31,6 @@ public class DriverService {
 
     public List<Car> getCars() {
         return driverRepository.findAllBy();
-        //return driverRepository.findByContactAddress(address);
     }
 
     public List<Driver> findByAddress(String address) {
@@ -46,4 +45,13 @@ public class DriverService {
         Driver c = driverRepository.findByLicenseNumber(licenseNumber);
         driverRepository.delete(c);
     }
+
+    public Driver findByCarPlate(String plateNumber) {
+        return driverRepository.findByCar_PlateNumber(plateNumber);
+    }
+
+    public Driver findCarByIndex(String index) {
+        return driverRepository.findByCar_Index(index);
+    }
+
 }

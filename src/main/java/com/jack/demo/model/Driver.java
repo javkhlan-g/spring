@@ -4,21 +4,19 @@ package com.jack.demo.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 @Document
 public class Driver {
     @Id
     private String id;
     private String name;
     private String licenseNumber;
-    private List<Car> cars;
+    private Car car;
     private Contact contact;
 
-    public Driver(String name, String licenseNumber, List<Car> cars, Contact contact) {
+    public Driver(String name, String licenseNumber, Car car, Contact contact) {
         this.name = name;
         this.licenseNumber = licenseNumber;
-        this.cars = cars;
+        this.car = car;
         this.contact = contact;
     }
 
@@ -47,12 +45,12 @@ public class Driver {
         this.licenseNumber = licenseNumber;
     }
 
-    public List<Car> getCars() {
-        return cars;
+    public Car getCar() {
+        return car;
     }
 
-    public void setCars(List<Car> cars) {
-        this.cars = cars;
+    public void setCar(Car car) {
+        this.car = car;
     }
 
     public Contact getContact() {
