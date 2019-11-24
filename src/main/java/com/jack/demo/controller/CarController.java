@@ -14,12 +14,6 @@ public class CarController {
     @Autowired
     private CarService carService;
 
-    @PostMapping("/create")
-    public String create(@RequestBody Car c) {
-        Car car = carService.create(c.getName(), c.getPlateNumber());
-        return car.toString();
-    }
-
     @GetMapping("/list")
     public List<Car> getCars() {
         return carService.getAll();

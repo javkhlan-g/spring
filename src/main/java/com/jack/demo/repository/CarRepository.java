@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface CarRepository extends MongoRepository<Car, String> {
         public Car findByPlateNumber(String number);
-}
+        List<Car> getAllBy();
+ }

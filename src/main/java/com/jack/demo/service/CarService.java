@@ -12,11 +12,12 @@ public class CarService {
     @Autowired
     private CarRepository carRepository;
 
-    public Car create(String name, String plateNumber) {
-        return carRepository.save(new Car(name, plateNumber));
+    public Car create(String index, String name, String plateNumber, String video) {
+        return carRepository.save(new Car(index, name, plateNumber, video));
     }
 
     public List<Car> getAll() {
+
         return carRepository.findAll();
     }
 
@@ -30,7 +31,7 @@ public class CarService {
 
     public Car update(String name, String plateNumber) {
         Car c = carRepository.findByPlateNumber(plateNumber);
-        c.setName(name);
+        c.setModel(name);
         return carRepository.save(c);
     }
 

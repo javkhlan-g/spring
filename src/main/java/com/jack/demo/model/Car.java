@@ -2,25 +2,45 @@ package com.jack.demo.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document
 public class Car {
-    @Id
-    public String id;
-    public String name;
+
+    public String index;
+    public String model;
     public String plateNumber;
+    public String video;
 
-    public Car(String name, String plateNumber) {
-        this.name = name;
+    public Car(String index, String model, String plateNumber, String video) {
+        this.index = index;
+        this.model = model;
         this.plateNumber = plateNumber;
+        this.video = video;
     }
 
-    public String getName() {
-        return name;
+    public String getIndex() {
+        return index;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setIndex(String index) {
+        this.index = index;
+    }
+
+    public String getVideo() {
+        return video;
+    }
+
+    public void setVideo(String video) {
+        this.video = video;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
     }
 
     public String getPlateNumber() {
@@ -31,10 +51,4 @@ public class Car {
         this.plateNumber = plateNumber;
     }
 
-    @Override
-    public String toString() {
-        return String.format(
-                "Car [name=%s, number=%s]", name, plateNumber
-        );
-    }
 }
