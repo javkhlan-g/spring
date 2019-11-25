@@ -50,7 +50,8 @@ public class DriverController {
 
         Driver d = driverService.findByCarPlate(plateNumber);
         if (d == null) {
-            return "Sorry,the requested driver is not found";
+            //return "Sorry,the requested driver is not found";
+            throw new RuntimeException("Sorry,the requested driver is not found");
         }
 
         boolean matches = Pattern.matches(FRONT_KEY, msg);
@@ -61,7 +62,8 @@ public class DriverController {
             currentIndex--;
             d = driverService.findCarByIndex(currentIndex.toString());
             if (d == null) {
-                return "Sorry, Car not found in front of you";
+                //return "Sorry, Car not found in front of you";
+                throw new RuntimeException("Sorry, Car not found in front of you");
             }
             sendFcm(d);
         } else {
@@ -70,18 +72,22 @@ public class DriverController {
                 currentIndex++;
                 d = driverService.findCarByIndex(currentIndex.toString());
                 if (d == null) {
-                    return "Sorry, Car not found in front of you";
+                    //return "Sorry, Car not found in front of you";
+                    throw new RuntimeException("Sorry, Car not found in behind of you");
                 }
                 sendFcm(d);
             } else {
-                return "Sorry, We didn't completely understand your expression. Please say it again more clearly!";
+                throw new RuntimeException("Sorry, We didn't completely understand your expression. Please say it again more clearly!");
+                //return "Sorry, We didn't completely understand your expression. Please say it again more clearly!";
             }
         }
 
-        return d.toString();
+        return "We have sent the notification that you have requested";
     }
 
     private void sendFcm(Driver d) {
 
     }
+
+
 }
