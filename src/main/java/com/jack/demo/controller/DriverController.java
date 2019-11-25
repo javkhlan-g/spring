@@ -82,7 +82,7 @@ public class DriverController {
             }
         }
 
-        return "We have sent the notification that you have requested";
+        return "We have sent the notification";
     }
 
     private void sendFcm(Driver d) {
