@@ -2,6 +2,7 @@ package com.jack.demo.service;
 
 import com.jack.demo.model.Car;
 import com.jack.demo.repository.CarRepository;
+import com.jack.demo.repository.DriverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import java.util.List;
 public class CarService {
     @Autowired
     private CarRepository carRepository;
+    private DriverRepository driverRepository;
 
     public Car create(String index, String name, String plateNumber, String video) {
         return carRepository.save(new Car(index, name, plateNumber, video));

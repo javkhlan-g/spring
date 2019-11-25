@@ -55,26 +55,33 @@ public class DriverController {
 
         boolean matches = Pattern.matches(FRONT_KEY, msg);
 
-
+        Integer currentIndex = Integer.parseInt(d.getCar().getIndex());
 
         if (matches) {
+            currentIndex--;
+            d = driverService.findCarByIndex(currentIndex.toString());
+            if (d == null) {
+                return "Sorry, Car not found in front of you";
+            }
             sendFcm(d);
         } else {
             matches = Pattern.matches(REAR_KEY, msg);
             if (matches) {
+                currentIndex++;
+                d = driverService.findCarByIndex(currentIndex.toString());
+                if (d == null) {
+                    return "Sorry, Car not found in front of you";
+                }
                 sendFcm(d);
             } else {
-
+                return "Sorry, We didn't completely understand your expression. Please say it again more clearly!";
             }
         }
-        System.out.println("matches= " + matches);
-        return msg;
-    }
 
+        return d.toString();
+    }
 
     private void sendFcm(Driver d) {
 
     }
-
-
 }
