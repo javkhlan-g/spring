@@ -1,5 +1,10 @@
 package com.jack.demo.controller;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.Message;
 import com.jack.demo.model.Car;
 import com.jack.demo.model.Driver;
 import com.jack.demo.service.DriverService;
@@ -86,7 +91,27 @@ public class DriverController {
     }
 
     private void sendFcm(Driver d) {
+        String registrationToken = "YOUR_REGISTRATION_TOKEN";
 
+// See documentation on defining a message payload.
+        Message message = Message.builder()
+                .putData("score", "850")
+                .putData("time", "2:45")
+                .setToken(registrationToken)
+                .build();
+
+// Send a message to the device corresponding to the provided
+// registration token.
+        String response = FirebaseMessaging.getInstance().send(message);
+// Response is a message ID string.
+        System.out.println("Successfully sent message: " + response);
+
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setCredentials(GoogleCredentials.newBuilder().build().getApplicationDefault())
+                .setDatabaseUrl("https://kr-car.firebaseio.com/")
+                .build();
+
+        FirebaseApp.initializeApp(options);
     }
 
 
