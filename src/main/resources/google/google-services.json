@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "170667269086",
+    "firebase_url": "https://kr-car.firebaseio.com",
+    "project_id": "kr-car",
+    "storage_bucket": "kr-car.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:170667269086:android:95f6838a1bc0407d855b4f",
+        "android_client_info": {
+          "package_name": "com.bagi.car"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "170667269086-ga29sfsl409a6ibdph0oa7bubl83vvrd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApNJLKoazj8KQa_xPruRMsJYV-bOPBmRU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "170667269086-ga29sfsl409a6ibdph0oa7bubl83vvrd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

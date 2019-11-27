@@ -1,17 +1,17 @@
 package com.jack.demo.controller;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.Message;
 import com.jack.demo.model.Car;
 import com.jack.demo.model.Driver;
+import com.jack.demo.service.AndroidPushNotificationsService;
 import com.jack.demo.service.DriverService;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 @RequestMapping("/api/v1/driver")
@@ -19,6 +19,9 @@ import java.util.regex.Pattern;
 public class DriverController {
     @Autowired
     private DriverService driverService;
+    @Autowired
+    AndroidPushNotificationsService androidPushNotificationsService;
+
 
     public static final String FRONT_KEY = ".*urd.*";
     public static final String REAR_KEY = ".*hoino.*";
@@ -70,7 +73,7 @@ public class DriverController {
                 //return "Sorry, Car not found in front of you";
                 throw new RuntimeException("Sorry, Car not found in front of you");
             }
-            sendFcm(d);
+            msg = sendFcm(d);
         } else {
             matches = Pattern.matches(REAR_KEY, msg);
             if (matches) {
@@ -80,38 +83,49 @@ public class DriverController {
                     //return "Sorry, Car not found in front of you";
                     throw new RuntimeException("Sorry, Car not found in behind of you");
                 }
-                sendFcm(d);
+                msg = sendFcm(d);
             } else {
                 throw new RuntimeException("Sorry, We didn't completely understand your expression. Please say it again more clearly!");
                 //return "Sorry, We didn't completely understand your expression. Please say it again more clearly!";
             }
         }
 
-        return "We have sent the notification";
+        return "We have sent the notification: "+msg;
     }
 
-    private void sendFcm(Driver d) {
-        String registrationToken = "YOUR_REGISTRATION_TOKEN";
+    private String sendFcm(Driver d) {
+        JSONObject body = new JSONObject();
+        body.put("to", d.getContact().getDevice());
+        body.put("priority", "high");
 
-// See documentation on defining a message payload.
-        Message message = Message.builder()
-                .putData("score", "850")
-                .putData("time", "2:45")
-                .setToken(registrationToken)
-                .build();
+        JSONObject notification = new JSONObject();
+        notification.put("title", "JSA Notification");
+        notification.put("body", "Happy Message!");
 
-// Send a message to the device corresponding to the provided
-// registration token.
-        String response = FirebaseMessaging.getInstance().send(message);
-// Response is a message ID string.
-        System.out.println("Successfully sent message: " + response);
+        JSONObject data = new JSONObject();
+        data.put("Key-1", "JSA Data 1");
+        data.put("Key-2", "JSA Data 2");
 
-        FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.newBuilder().build().getApplicationDefault())
-                .setDatabaseUrl("https://kr-car.firebaseio.com/")
-                .build();
+        body.put("notification", notification);
+        body.put("data", data);
 
-        FirebaseApp.initializeApp(options);
+        System.out.println(body.toString());
+
+        HttpEntity<String> request = new HttpEntity<>(body.toString());
+
+        CompletableFuture<String> pushNotification = androidPushNotificationsService.send(request);
+        CompletableFuture.allOf(pushNotification).join();
+
+        try {
+            String firebaseResponse = pushNotification.get();
+
+            return firebaseResponse;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return "sent";
     }
 
 
