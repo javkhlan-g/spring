@@ -23,8 +23,8 @@ public class DriverController {
     AndroidPushNotificationsService androidPushNotificationsService;
 
 
-    public static final String FRONT_KEY = ".*urd.*";
-    public static final String REAR_KEY = ".*hoino.*";
+    public static final String FRONT_KEY = ".*front.*";
+    public static final String REAR_KEY = ".*back.*";
 
 
     @PostMapping("/create")
