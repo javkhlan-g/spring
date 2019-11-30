@@ -25,6 +25,7 @@ public class DriverController {
 
     public static final String FRONT_KEY = ".*front.*";
     public static final String REAR_KEY = ".*back.*";
+    public static final String CONTENT_TYPE = ".*video.*";
 
 
     @PostMapping("/create")
@@ -65,7 +66,9 @@ public class DriverController {
         boolean matches = Pattern.matches(FRONT_KEY, msg);
 
         Integer currentIndex = Integer.parseInt(d.getCar().getIndex());
-
+        String notificationBody = "";
+        String contentType = "text";
+        String content = "";
         if (matches) {
             currentIndex--;
             d = driverService.findCarByIndex(currentIndex.toString());
@@ -73,7 +76,20 @@ public class DriverController {
                 //return "Sorry, Car not found in front of you";
                 throw new RuntimeException("Sorry, Car not found in front of you");
             }
-            msg = sendFcm(d);
+
+            boolean hasVideo = Pattern.matches(CONTENT_TYPE, msg);
+
+            if (hasVideo) {
+                notificationBody = "You have a video from the BACK car #" + plateNumber;
+                contentType = "video";
+                content = d.getCar().getVideo();
+            } else {
+                notificationBody = "You have a text from the BACK car #" + plateNumber;
+                content = naturalLanguageProcess(msg);
+            }
+
+            msg = sendFcm(content, notificationBody, contentType, d.getContact().getDevice());
+
         } else {
             matches = Pattern.matches(REAR_KEY, msg);
             if (matches) {
@@ -83,29 +99,50 @@ public class DriverController {
                     //return "Sorry, Car not found in front of you";
                     throw new RuntimeException("Sorry, Car not found in behind of you");
                 }
-                msg = sendFcm(d);
+
+                boolean hasVideo = Pattern.matches(CONTENT_TYPE, msg);
+
+                if (hasVideo) {
+                    notificationBody = "You have a video from the FRONT car #" + plateNumber;
+                    contentType = "video";
+                    content = d.getCar().getVideo();
+                } else {
+                    notificationBody = "You have a text from the FRONT car #" + plateNumber;
+                    content = naturalLanguageProcess(msg);
+                }
+
+                msg = sendFcm(content, notificationBody, contentType, d.getContact().getDevice());
             } else {
                 throw new RuntimeException("Sorry, We didn't completely understand your expression. Please say it again more clearly!");
                 //return "Sorry, We didn't completely understand your expression. Please say it again more clearly!";
             }
         }
 
-        return "We have sent the notification: "+msg;
+        return "We have sent the notification";
     }
 
-    private String sendFcm(Driver d) {
+
+    private String naturalLanguageProcess(String msg) {
+        if (Pattern.matches(".*fast.*", msg)) return "GO FASTER!!";
+        if (Pattern.matches(".*slow.*", msg)) return "GO SLOWER!!";
+        throw new RuntimeException("Sorry, We didn't completely understand your expression. Please say it again more clearly!");
+        //return "";
+    }
+
+    private String sendFcm(String content, String msg, String contentType, String token) {
+
+
         JSONObject body = new JSONObject();
-        body.put("to", d.getContact().getDevice());
+        body.put("to", token);
         body.put("priority", "high");
 
         JSONObject notification = new JSONObject();
-        notification.put("title", "JSA Notification");
-        notification.put("body", "Happy Message!");
+        notification.put("title", "CarBot");
+        notification.put("body", msg);
 
         JSONObject data = new JSONObject();
-        data.put("Key-1", "JSA Data 1");
-        data.put("Key-2", "JSA Data 2");
-
+        data.put("content", content);
+        data.put("contentType", contentType);
         body.put("notification", notification);
         body.put("data", data);
 
